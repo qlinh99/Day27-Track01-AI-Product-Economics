@@ -131,7 +131,7 @@ Summarize every 5 đáng thử cho smart mix nếu conversation dài nhưng cầ
 Model: Cheap / GPT-4o-mini hoặc Gemini Flash-Lite
 Web: OFF
 History: Last 3 turns
-Tên dự kiến: Budget FAQ
+Tên dự kiến: Budget Bot
 ```
 
 **Combo 2 (định hướng premium)**:
@@ -146,7 +146,7 @@ Tên dự kiến: Premium Concierge
 **Combo 3 (định hướng balanced / smart mix)**:
 
 ```text
-Model: Mix - cheap for classification/simple guide, strong for visa and complex itinerary
+Model: GPT-4o-mini as base model; use stronger model for high-risk or complex cases such as visa uncertainty, complaints, or complex itinerary.
 Web: ON selective for visa and weather/event
 History: Last 5 turns
 Tên dự kiến: Smart Mix
