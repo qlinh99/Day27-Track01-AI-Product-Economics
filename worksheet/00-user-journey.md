@@ -6,126 +6,104 @@
 
 ---
 
-## Tại sao phải làm bước này?
+## Bước 1 — Mỗi người đóng vai 1 tourist
 
-Nếu nhóm bắt đầu tính cost mà chưa biết tourist hỏi gì → mọi con số chỉ là lý thuyết. Bước này buộc nhóm "chạm" sản phẩm trước khi mở Excel.
-
----
-
-## Bước 1 — Mỗi người đóng vai 1 tourist (4 phút)
-
-Tưởng tượng mình là 1 khách du lịch nước ngoài đang plan trip Việt Nam. Bạn vừa mở website công ty du lịch, thấy có chatbot ở góc màn hình. Bạn sẽ hỏi gì?
-
-Trước khi viết, tự hỏi:
-
-- Mình từ đâu đến? Mỹ, Anh, Hàn, Nhật, Úc?
-- Đi 1 mình hay đi nhóm? Budget khoảng bao nhiêu?
-- Đã biết gì về Việt Nam? Lần đầu đến hay đã đến rồi?
-- Mình lo lắng điều gì nhất? (visa, an toàn, ngôn ngữ, thời tiết, ẩm thực, lừa đảo...)
-
-Viết **5–7 câu hỏi bằng tiếng Anh** mình sẽ thật sự gửi cho chatbot. Viết câu hỏi tự nhiên, đúng giọng tourist — không phải đặt câu hỏi "nghe có vẻ technical".
-
-→ Mỗi người viết vào ô dưới (chưa có gì sẵn — đừng nhìn người bên cạnh):
-
-### Tourist #1 (Tên thành viên: _________)
+### Tourist #1 (Tên thành viên: Hứa Quang Linh)
 
 ```text
-(điền 5–7 câu hỏi tiếng Anh vào đây)
+1. I am visiting Vietnam for the first time in July. Should I start in Hanoi or Ho Chi Minh City?
+2. Do US citizens need a visa for a 12-day trip to Vietnam?
+3. Can you suggest a 7-day itinerary for Hanoi, Ha Long Bay, and Hoi An?
+4. What is the weather like in Da Nang next week?
+5. Is it safe to take overnight trains in Vietnam as a solo female traveler?
+6. Can I book a private airport transfer from Noi Bai to my hotel through your company?
+7. I am from the UK and want to stay 45 days. What visa option should I choose?
+8. Are there any festivals or public holidays in Vietnam during late January?
+9. Can you recommend a less crowded beach destination than Phu Quoc?
 ```
 
-### Tourist #2 (Tên thành viên: _________)
+### Tourist #2 (Tên thành viên: Dương Khoa Điềm)
 
 ```text
-(điền 5–7 câu hỏi tiếng Anh vào đây)
-```
-
-### Tourist #3 (Tên thành viên: _________)
-
-```text
-(điền 5–7 câu hỏi tiếng Anh vào đây)
+1. We are a family of four from Australia. What kid-friendly tours do you recommend in Vietnam?
+2. What is the best time of year to visit Sapa without too much rain?
+3. Can your team help us book a Mekong Delta day tour from Ho Chi Minh City?
+4. Are there any food tours that can handle peanut allergies?
+5. How much should we budget per day for a comfortable family trip?
+6. I paid for a tour but have not received confirmation. Can someone check this now?
+7. I only have 3 days in Central Vietnam. Should I choose Hue, Hoi An, or Da Nang?
+8. Can I customize a luxury honeymoon package with boutique hotels?
+9. My driver was late and I missed part of the tour. I want to complain to a manager.
 ```
 
 ---
 
-## Bước 2 — Gom lại và phân loại (4 phút)
-
-Cả nhóm chụm vào, gom tất cả câu hỏi lại. Trước khi điền bảng, thảo luận 1 phút:
-
-- Có câu hỏi nào lặp lại giữa các tourist không?
-- Có chủ đề nào không ai trong nhóm nghĩ tới ban đầu nhưng quan trọng?
-- Câu nào chatbot có thể trả lời được? Câu nào cần chuyển sang nhân viên thật?
-
-5 intent có sẵn (tham khảo `cost-reference-card.md` mục 2):
-
-- **Visa/Policy** — chính sách, thủ tục nhập cảnh
-- **Điểm đến/Guide** — gợi ý đi đâu, làm gì, ăn gì
-- **Thời tiết/Sự kiện** — info real-time
-- **Tour/Booking** — đặt vé, đặt tour, đặt phòng → chuyển sales
-- **Khiếu nại** — phàn nàn → chuyển manager
-
-Sau khi gom, điền bảng phân loại:
+## Bước 2 — Gom lại và phân loại
 
 | # | Câu hỏi (1 dòng) | Intent thuộc loại nào | Cần bao nhiêu lượt chat để xong? | Bot trả lời hay chuyển người? |
 |---|---|---|---|---|
-| 1 | | | | □ Bot · □ Người |
-| 2 | | | | □ Bot · □ Người |
-| 3 | | | | □ Bot · □ Người |
-| 4 | | | | □ Bot · □ Người |
-| 5 | | | | □ Bot · □ Người |
-| 6 | | | | □ Bot · □ Người |
-| 7 | | | | □ Bot · □ Người |
-| 8 | | | | □ Bot · □ Người |
-| 9 | | | | □ Bot · □ Người |
-| 10 | | | | □ Bot · □ Người |
+| 1 | Do US citizens need a visa for a 12-day trip to Vietnam? | Visa/Policy | 3 | Bot |
+| 2 | I am from the UK and want to stay 45 days. What visa option should I choose? | Visa/Policy | 4 | Bot |
+| 3 | Can you suggest a 7-day itinerary for Hanoi, Ha Long Bay, and Hoi An? | Điểm đến/Guide | 5 | Bot |
+| 4 | I only have 3 days in Central Vietnam. Should I choose Hue, Hoi An, or Da Nang? | Điểm đến/Guide | 4 | Bot |
+| 5 | Can you recommend a less crowded beach destination than Phu Quoc? | Điểm đến/Guide | 3 | Bot |
+| 6 | What is the weather like in Da Nang next week? | Thời tiết/Sự kiện | 2 | Bot |
+| 7 | Are there any festivals or public holidays in Vietnam during late January? | Thời tiết/Sự kiện | 3 | Bot |
+| 8 | Can I book a private airport transfer from Noi Bai to my hotel through your company? | Tour/Booking | 1 | Người |
+| 9 | Can I customize a luxury honeymoon package with boutique hotels? | Tour/Booking | 1 | Người |
+| 10 | My driver was late and I missed part of the tour. I want to complain to a manager. | Khiếu nại | 1 | Người |
 
 ---
 
-## Bước 3 — Rút insight cho nhóm (cuối phần Setup)
-
-Trả lời nhanh 4 câu — sẽ dùng lại ở các bước sau:
+## Bước 3 — Rút insight cho nhóm
 
 **Tổng số câu hỏi nhóm gom được**:
 
 ```text
-(điền số vào đây)
+18 câu hỏi gốc; chọn 10 câu tiêu biểu để phân loại trong bảng.
 ```
 
 **Phân bố intent thực tế của nhóm** (% mỗi intent):
 
 ```text
-Guide: ___%
-Visa: ___%
-Weather: ___%
-Booking: ___%
-Khiếu nại: ___%
+Guide: 30%
+Visa: 20%
+Weather: 20%
+Booking: 20%
+Khiếu nại: 10%
 ```
 
 **Số lượt chat trung bình để xong 1 chủ đề**:
 
 ```text
-(điền số vào đây — ví dụ: "4 lượt cho info, 1 lượt cho booking")
+Info/guide thường cần 3-5 lượt vì phải hỏi thêm budget, thời gian, sở thích.
+Visa/policy cần khoảng 3-4 lượt vì phải xác nhận quốc tịch, số ngày ở lại, số lần nhập cảnh.
+Weather/event cần 2-3 lượt nếu có web search.
+Booking và khiếu nại chỉ cần 1 lượt để nhận diện rồi chuyển người phụ trách.
 ```
 
 **Đối chiếu với đề bài** (Scenario A = 4 lượt, Scenario B = 7 lượt):
 
 ```text
-Hợp lý vì... / Khác vì... (điền vào đây)
+Hợp lý vì các câu hỏi info phổ biến rơi vào khoảng 3-5 lượt, gần Scenario A.
+Scenario B phù hợp với conversation phức tạp hơn: khách hỏi itinerary, budget, visa, thời tiết và thay đổi yêu cầu trong cùng một cuộc chat.
+Booking và khiếu nại không nên tính như full LLM conversation vì route sang người thật gần như ngay lập tức.
 ```
 
 **Insight bất ngờ — điều gì nhóm chỉ hiểu sau khi đóng vai?**
 
 ```text
-(điền 1–2 câu vào đây — ví dụ: "tourist thường hỏi nhiều intent trong 1 conversation",
-"câu hỏi visa phức tạp hơn tưởng — cần 4–5 lượt", "câu hỏi booking thường rất ngắn")
+Tourist thường trộn nhiều intent trong cùng một hành trình: họ hỏi itinerary nhưng sẽ kéo theo weather, visa, budget và booking.
+Các intent cần thông tin mới như visa/weather tạo rủi ro chất lượng lớn hơn guide thông thường, nên không nên chỉ tối ưu theo giá model.
 ```
 
 ---
 
 ## Bảng kiểm trước khi sang file tiếp theo
 
-- [ ] Mỗi người trong nhóm đã viết ≥5 câu hỏi tourist
-- [ ] Đã gom + phân loại intent cho ≥10 câu (bảng trên)
-- [ ] Đã có phân bố intent % của nhóm (so với đề bài)
-- [ ] Có ít nhất 1 insight về cách tourist thật sự dùng chatbot
+- [x] Mỗi người trong nhóm đã viết ≥5 câu hỏi tourist
+- [x] Đã gom + phân loại intent cho ≥10 câu
+- [x] Đã có phân bố intent % của nhóm
+- [x] Có ít nhất 1 insight về cách tourist thật sự dùng chatbot
 
 Xong → mở `01-base-flow.md`.

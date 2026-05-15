@@ -1,6 +1,6 @@
 # 01 · Base Flow + Chốt 3 Knobs
 
-> **Mục tiêu**: Hiểu chatbot hoạt động ra sao ở mức base (không chọn config gì) — và xác định 3 knobs nhóm sẽ tweak ở các bước sau.
+> **Mục tiêu**: Hiểu chatbot hoạt động ra sao ở mức base và xác định 3 knobs nhóm sẽ tweak ở các bước sau.
 >
 > **Thời gian**: 7 phút (trong 15 phút phần Setup)
 
@@ -8,46 +8,61 @@
 
 ## Bước 1 — Đọc base flow trong cost reference card
 
-Mở file `cost-reference-card.md` ở phần **2. Base Flow** — xem flow chatbot mặc định. Đây là cấu trúc mọi config sẽ build dựa trên.
+Đã đọc mục **2. Base Flow** và **3. Decision Points** trong `cost-reference-card.md`.
 
-Đọc xong, tự kiểm tra hiểu:
+Các điểm nhóm chốt:
 
-- Khi tourist gửi tin nhắn, AI làm gì đầu tiên?
-- 5 intent dẫn đến 5 hành động khác nhau — hành động nào tốn LLM, hành động nào không?
-- Sau khi route, AI ráp gì lại để generate response?
-
-Nếu chưa hiểu → quay lại đọc lại 1 lần nữa. Đừng đi tiếp khi còn mơ hồ.
+- Tin nhắn đầu tiên được phân loại intent.
+- Visa/Policy, Guide/Destination và Weather/Event có thể đi qua RAG/web rồi generate response bằng LLM.
+- Tour/Booking chuyển sales và Complaint chuyển manager, tính `$0` LLM cost cho phần trả lời chính.
+- Sau khi route, chatbot ráp system prompt, history, RAG chunks, web results nếu có, và user message để generate response.
 
 ---
 
 ## Bước 2 — Vẽ lại flow theo cách hiểu của nhóm
 
-Vẽ flow ra giấy hoặc trên bảng (1 thành viên vẽ, cả nhóm góp ý). Có thể dùng ASCII đơn giản:
-
 ```text
-(vẽ flow của nhóm vào đây — hoặc dán link ảnh chụp bảng)
+Tourist message
+      |
+      v
+[Intent classification]
+      |
+      +--> Visa/Policy --------+
+      |                        |
+      |                        v
+      +--> Guide/Destination -> [Knowledge lookup: RAG top chunks]
+      |                        |
+      |                        +--> optional web search for fresh policy/info
+      |
+      +--> Weather/Event -----> [Web search for real-time info]
+      |
+      +--> Tour/Booking -----> [Handoff to sales] -> $0 LLM generation cost
+      |
+      +--> Complaint --------> [Escalate to manager] -> $0 LLM generation cost
+
+For bot-handled intents:
+
+Knowledge/web result
+      |
+      v
+[Context assembly]
+System prompt + selected history + RAG chunks + web results + user message
+      |
+      v
+[Response generation]
+Chosen model writes answer for tourist
 ```
 
-Khi vẽ, đảm bảo flow có 4 điểm:
+Flow có đủ 4 điểm:
 
-1. **Intent classification** — phân loại ý định
-2. **Route theo intent** — 5 nhánh đi đâu (RAG / Web search / Handoff / Escalate)
-3. **Context assembly** — ráp system prompt + history + RAG + web (nếu bật) + user msg
-4. **Response generation** — model tạo câu trả lời
-
-Nếu nhóm vẽ thiếu 1 trong 4 bước → bổ sung trước khi đi tiếp.
+1. Intent classification
+2. Route theo intent
+3. Context assembly
+4. Response generation
 
 ---
 
 ## Bước 3 — Xác định 3 Knobs
-
-3 knobs là 3 quyết định thiết kế nhóm có thể tweak. Mỗi config nhóm thiết kế = 1 bộ chọn tại 3 knobs này.
-
-Trước khi điền vào ô bên dưới, đọc nhanh mục **3. Decision Points** của `cost-reference-card.md`. Sau đó tự hỏi:
-
-- Knob 1 — Model tier: model rẻ và model mạnh chênh bao nhiêu lần? Có thể mix theo intent không?
-- Knob 2 — Web search: intent nào *cần* real-time? intent nào không cần?
-- Knob 3 — History: 7 lượt chat cuối đắt hay rẻ? Cắt history có rủi ro gì?
 
 ### Knob 1 — Model tier
 
@@ -60,17 +75,12 @@ Options:
 □ Mid          (Gemini Flash / Claude Haiku 4.5)
 □ Strong       (DeepSeek V4 Pro / Claude Sonnet 4.6)
 □ Premium      (Claude Opus 4.7 / GPT-5.5)
-□ Mix          (model khác nhau cho intent khác nhau — viết rõ)
+□ Mix          (model khác nhau cho intent khác nhau)
 ```
 
-**Câu hỏi gợi mở cho nhóm** (trả lời trước khi chọn):
-
-- Mục tiêu chính là chi phí thấp hay chất lượng cao?
-- Tourist hỏi câu phức tạp hay đơn giản hơn?
-- Có nên dùng cheap cho phân loại + strong cho trả lời không?
-
 ```text
-(viết suy nghĩ của nhóm vào đây — chưa cần chốt option, chỉ cần thấy hướng)
+Nhóm muốn thử đủ 3 hướng: một config cheap để kiểm tra sàn chi phí, một config premium để thấy trần chất lượng, và một config mix để dùng model mạnh cho câu hỏi có rủi ro cao như visa/complex itinerary.
+Cheap có thể đủ cho FAQ/guide đơn giản, nhưng không nên dùng cho mọi intent vì câu trả lời sai về visa hoặc lịch trình phức tạp có thể làm mất niềm tin.
 ```
 
 ### Knob 2 — Web search
@@ -81,18 +91,14 @@ Options:
 
 ```text
 □ OFF              (chỉ dùng RAG — knowledge base có sẵn)
-□ ON selective    (bật cho 1–2 intent cần real-time: visa, weather)
+□ ON selective     (bật cho 1-2 intent cần real-time: visa, weather)
 □ ON broad         (bật cho hầu hết intent)
 ```
 
-**Câu hỏi gợi mở:**
-
-- Visa policy đổi mỗi tháng — RAG có đủ không?
-- Weather là thông tin real-time tự nhiên — không có lựa chọn khác đúng không?
-- Web search tốn $0.005/call + 800 tokens — bật bừa có lợi không?
-
 ```text
-(viết suy nghĩ của nhóm vào đây)
+Nhóm nghiêng về web search selective cho phương án cân bằng vì weather và visa/policy có tính thời điểm.
+Web OFF phù hợp với config budget nhưng có rủi ro outdated.
+Web broad có thể tăng niềm tin cho khách nhưng dễ đội cost vì mỗi search thêm API cost và khoảng 800 input tokens.
 ```
 
 ### Knob 3 — History management
@@ -102,59 +108,66 @@ Options:
 Options:
 
 ```text
-□ Last 3 turns        (nhẹ nhất, dễ quên)
-□ Last 5 turns        (cân bằng)
-□ Full history        (nhớ tất cả, đắt nhất ở conv dài)
-□ Summarize every 5   (nâng cao — cần 1 LLM call phụ để tóm tắt)
+□ Last 3 turns
+□ Last 5 turns
+□ Full history
+□ Summarize every 5
 ```
 
-**Câu hỏi gợi mở:**
-
-- Tourist hay nói "tôi đã nói budget là $500 ở turn 1" rồi turn 7 hỏi gợi ý — nếu quên thì sao?
-- Scenario A trung bình 4 lượt → full history có tốn nhiều không?
-- Scenario B trung bình 7 lượt → mỗi turn thêm 260 tokens — tổng thêm bao nhiêu?
-
 ```text
-(viết suy nghĩ của nhóm vào đây)
+Last 3 turns rẻ nhưng có nguy cơ quên budget, dates hoặc traveler profile.
+Last 5 turns là lựa chọn cân bằng cho Scenario A và đa số hội thoại ngắn.
+Full history hợp với premium hoặc honeymoon/custom itinerary vì khách thường tham chiếu thông tin đã nói từ đầu.
+Summarize every 5 đáng thử cho smart mix nếu conversation dài nhưng cần tính thêm LLM call phụ.
 ```
 
 ---
 
 ## Bước 4 — Sơ bộ nhóm muốn thử những combo nào?
 
-Chưa cần quyết định cuối cùng. Chỉ cần phác thảo: nhóm dự định thử ít nhất 3 combo khác nhau. Càng khác nhau, càng dễ thấy tradeoff.
-
 **Combo 1 (định hướng cheap)**:
 
 ```text
-Model: ___    Web: ___    History: ___    (đặt tên dự kiến: ___)
+Model: Cheap / GPT-4o-mini hoặc Gemini Flash-Lite
+Web: OFF
+History: Last 3 turns
+Tên dự kiến: Budget FAQ
 ```
 
 **Combo 2 (định hướng premium)**:
 
 ```text
-Model: ___    Web: ___    History: ___    (đặt tên dự kiến: ___)
+Model: Premium / GPT-5.5 hoặc Claude Opus 4.7
+Web: ON broad
+History: Full history
+Tên dự kiến: Premium Concierge
 ```
 
 **Combo 3 (định hướng balanced / smart mix)**:
 
 ```text
-Model: ___    Web: ___    History: ___    (đặt tên dự kiến: ___)
+Model: Mix - cheap for classification/simple guide, strong for visa and complex itinerary
+Web: ON selective for visa and weather/event
+History: Last 5 turns
+Tên dự kiến: Smart Mix
 ```
 
-**Combo 4** (optional — nếu nhóm có ý tưởng khác):
+**Combo 4** (optional):
 
 ```text
-Model: ___    Web: ___    History: ___    (đặt tên dự kiến: ___)
+Model: Mid / Claude Haiku 4.5 hoặc Gemini Flash
+Web: ON selective for weather only
+History: Summarize every 5 turns
+Tên dự kiến: Efficient Advisor
 ```
 
 ---
 
 ## Bảng kiểm trước khi sang file tiếp theo
 
-- [ ] Đã vẽ flow base có đủ 4 bước (Intent → Route → Context → Response)
-- [ ] Hiểu Booking + Khiếu nại = $0 LLM cost (chuyển con người)
-- [ ] Đã phác thảo ≥3 combo khác nhau (chưa cần chi tiết)
-- [ ] Nhóm đồng thuận về hướng đi mỗi combo
+- [x] Đã vẽ flow base có đủ 4 bước (Intent → Route → Context → Response)
+- [x] Hiểu Booking + Khiếu nại = $0 LLM cost (chuyển con người)
+- [x] Đã phác thảo ≥3 combo khác nhau
+- [x] Nhóm đồng thuận về hướng đi mỗi combo
 
 Xong → 10:25 chuyển sang **Main phase**. Mở `02-config-design.md`.
