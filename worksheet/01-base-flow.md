@@ -71,11 +71,11 @@ Flow có đủ 4 điểm:
 Options:
 
 ```text
-□ Cheap        (Gemini Flash-Lite / DeepSeek V4 Flash / GPT-4o-mini)
+☑ Cheap        (Gemini Flash-Lite / DeepSeek V4 Flash / GPT-4o-mini)
 □ Mid          (Gemini Flash / Claude Haiku 4.5)
 □ Strong       (DeepSeek V4 Pro / Claude Sonnet 4.6)
-□ Premium      (Claude Opus 4.7 / GPT-5.5)
-□ Mix          (model khác nhau cho intent khác nhau)
+☑ Premium      (Claude Opus 4.7 / GPT-5.5)
+☑ Mix          (model khác nhau cho intent khác nhau)
 ```
 
 ```text
@@ -91,7 +91,7 @@ Options:
 
 ```text
 □ OFF              (chỉ dùng RAG — knowledge base có sẵn)
-□ ON selective     (bật cho 1-2 intent cần real-time: visa, weather)
+☑ ON selective     (bật cho 1-2 intent cần real-time: visa, weather)
 □ ON broad         (bật cho hầu hết intent)
 ```
 
@@ -110,7 +110,7 @@ Options:
 ```text
 □ Last 3 turns
 □ Last 5 turns
-□ Full history
+☑ Full history
 □ Summarize every 5
 ```
 
